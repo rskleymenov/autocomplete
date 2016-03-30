@@ -1,6 +1,10 @@
 package roman.kleimenov.autocomplete;
 
-import java.util.ArrayList;
+import java.util.Iterator;
+
+import roman.kleimenov.autocomplete.exceptions.NoElementException;
+import roman.kleimenov.autocomplete.implementation.RWayTrie;
+import roman.kleimenov.autocomplete.implementation.Tuple;
 
 /**
  * Class that contain in-memory dictionary and manipulate with it. Dictionary is
@@ -95,24 +99,53 @@ public class PrefixMatches {
 	 *            k-different words
 	 * @return list of words
 	 */
-	public Iterable<String> wordsWithPrefix(String pref, int k) {
+	public Iterable<String> wordsWithPrefix(final String pref, final int k) {
 		if (pref.length() < 2) {
 			throw new IllegalArgumentException("pref must be larger than one symbol!");
 		}
-		ArrayList<String> resultList = new ArrayList<String>();
-		int lastWordLenght = -1;
-		int counter = 0;
-		for (String word : trie.wordsWithPrefix(pref)) {
-			if (word.length() != lastWordLenght) {
-				counter++;
+		return new Iterable<String>() {
+			public Iterator<String> iterator() {
+				return new PrefixMatchesIterator(trie.wordsWithPrefix(pref), k);
 			}
-			if (counter == k + 1)
-				break;
+		};
+	}
 
-			lastWordLenght = word.length();
-			resultList.add(word);
+	private class PrefixMatchesIterator implements Iterator<String> {
+		private Iterator<String> iterator;
+		private int kLengths;
+		private String currentWord;
+		private boolean getNextFlag;
+
+		public PrefixMatchesIterator(Iterable<String> iterable, int k) {
+			this.iterator = iterable.iterator();
+			this.kLengths = k;
 		}
-		return resultList;
+
+		public boolean hasNext() {
+			if (getNextFlag) {
+				return true;
+			} else {
+				while (iterator.hasNext()) {
+					currentWord = iterator.next();
+					if (currentWord.length() <= kLengths + 2) {
+						getNextFlag = true;
+						return true;
+					}
+				}
+			}
+			return false;
+		}
+
+		public String next() {
+			if (hasNext()) {
+				getNextFlag = false;
+			} else {
+				getNextFlag = true;
+				throw new NoElementException();
+			}
+			return currentWord;
+		}
+
 	}
 
 	/**

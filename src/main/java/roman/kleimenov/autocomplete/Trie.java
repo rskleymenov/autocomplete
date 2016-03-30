@@ -1,5 +1,7 @@
 package roman.kleimenov.autocomplete;
 
+import roman.kleimenov.autocomplete.implementation.Tuple;
+
 /**
  * Interface Trie contains declaration of methods that manage state of RWayTrie.
  * These methods helps to represent an in-memory dictionary that based on
@@ -17,7 +19,7 @@ public interface Trie {
 	 * @param tuple
 	 *            word - weight value
 	 */
-	public void add(Tuple tuple);
+	void add(Tuple tuple);
 
 	/**
 	 * Method that checks word in the trie
@@ -26,7 +28,7 @@ public interface Trie {
 	 *            word to check
 	 * @return contains or not
 	 */
-	public boolean contains(String word);
+	boolean contains(String word);
 
 	/**
 	 * Method that delete some word from the trie
@@ -35,14 +37,14 @@ public interface Trie {
 	 *            the word to delete
 	 * @return success of operation
 	 */
-	public boolean delete(String word);
+	boolean delete(String word);
 
 	/**
 	 * Iterator through all words
 	 * 
 	 * @return list of words
 	 */
-	public Iterable<String> words();
+	Iterable<String> words();
 
 	/**
 	 * Iterator through all words
@@ -51,13 +53,13 @@ public interface Trie {
 	 *            beginning of word
 	 * @return list of words
 	 */
-	public Iterable<String> wordsWithPrefix(String pref);
+	Iterable<String> wordsWithPrefix(String pref);
 
 	/**
 	 * Return size of trie
 	 * 
 	 * @return size of trie
 	 */
-	public int size();
+	int size();
 
 }
